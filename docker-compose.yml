@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+    phabricator:
+        build: . 
+        container_name: "phabricator"
+        environment:
+            - VIRTUAL_HOST=phabricator.lan,cdn.phabricator.lan
+#            - LETSENCRYPT_HOST=projects.oneko.org
+#            - LETSENCRYPT_EMAIL=onekorama@gmail.com
+        volumes:
+            - ./data/repos:/var/repo
+            - ./data/store:/var/www/phabricator/store  
+        ports:
+            - "10780:80"
+            - "10743:443"
+        tty: true
+
+networks:
+    default:
+        external:
+            name: proxied
