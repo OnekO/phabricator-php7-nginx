@@ -6,18 +6,12 @@ RUN apk --no-cache add \
     nginx \
     php7 \
     php7-fpm \
-    git \
-    unzip \
-    yarn \
-    wget \
     php7-mcrypt \
     php7-iconv \
-    php7-pdo php7-pdo_mysql \
     php7-zip \
     php7-gd \
     php7-exif \
     php7-imagick \
-    php7-redis \
     php7-apcu \
     php7-phar \
     php7-json \
@@ -30,14 +24,14 @@ RUN apk --no-cache add \
     php7-opcache \
     php7-pcntl \
     php7-posix \
-    autoconf \
-    build-base \
-    imagemagick-dev \
+    py-pygments \
     tzdata \
-    py-pygments
+    git
+
 RUN set -x ; \
     addgroup -g 82 -S www-data ; \
     adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
+
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/phabricator.conf /etc/nginx/conf.d/default.conf
 
@@ -75,8 +69,6 @@ RUN cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     echo "${TIMEZONE}" > /etc/timezone && \
     sed -i "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" /etc/php7/php.ini
 
-RUN wget https://getcomposer.org/installer && php installer --install-dir=/usr/local/bin --filename=composer && composer global require hirak/prestissimo
-
 WORKDIR /var/www/phabricator
 RUN git clone https://github.com/phacility/libphutil.git && \
     git clone https://github.com/phacility/arcanist.git && \
@@ -93,5 +85,6 @@ ENV MYSQL_PORT "3306"
 ENV BASE_URI "http://phabricator.lan"
 ENV CDN_URI "http://cdn.phabricator.lan"
 ENV LOCAL_PATH "/var/www/phabricator/store"
+ENV FORCE_HTTPS "true"
 
 ENTRYPOINT /init.sh

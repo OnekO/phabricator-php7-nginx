@@ -13,6 +13,7 @@ services:
             - BASE_URI=http://phabricator.lan
             - CDN_URI=http://cdn.phabricator.lan
             - LOCAL_PATH=/var/www/phabricator/store
+            - FORCE_HTTPS=false
         volumes:
             - ./data/repos:/var/repo
             - ./data/store:/var/www/phabricator/store  
@@ -20,3 +21,8 @@ services:
             - "10780:80"
             - "10743:443"
         tty: true
+
+networks:
+    default:
+        external:
+            name: proxied

@@ -12,6 +12,10 @@ if [ ! -e $STARTED ]; then
     /var/www/phabricator/phabricator/bin/config set storage.local-disk.path ${LOCAL_PATH}
     /var/www/phabricator/phabricator/bin/config set pygments.enabled true
     /var/www/phabricator/phabricator/bin/phd start
+    if [ $FORCE_HTTPS == "true" ]; then
+        echo "Forcing HTTPS..."
+        echo -e "<?php\n\$_SERVER['HTTPS'] = true;" > /var/www/phabricator/phabricator/support/preamble.php
+    fi
 fi
 
 /usr/bin/supervisord -c /etc/supervisord.conf && /bin/sh
